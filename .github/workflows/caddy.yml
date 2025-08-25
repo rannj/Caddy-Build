@@ -53,7 +53,7 @@ jobs:
         sha256sum * > sha256
 
     - name: Generate tar for linux
-      if: matrix.config.GOOS = 'linux'
+      if: matrix.config.GOOS == 'linux'
       run: |
         mkdir release-ready
         cd ./release-tmp
@@ -67,7 +67,7 @@ jobs:
     
     - name: Upload to GitHub Release for other platform
       uses: svenstaro/upload-release-action@v2
-      if: github.event_name == 'release' && matrix.config.release && matrix.config.GOOS = 'linux'
+      if: github.event_name == 'release' && matrix.config.release && matrix.config.GOOS == 'linux'
       with:
         file: ./release-ready/caddy-${{ matrix.config.name }}.tar.gz
         tag: ${{ github.ref }}
