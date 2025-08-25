@@ -69,7 +69,6 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       if: github.event_name == 'release' && matrix.config.release && matrix.config.GOOS = 'linux'
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ./release-ready/caddy-${{ matrix.config.name }}.tar.gz
         tag: ${{ github.ref }}
         overwrite: true
