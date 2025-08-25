@@ -2,6 +2,16 @@ name: Build caddy
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'The tag for the GitHub Release (e.g., v1.0.0)'
+        required: true
+        type: string
+      create_release:
+        description: 'Create a GitHub Release?'
+        required: false
+        default: 'true'
+        type: boolean
 
 jobs:
   build:
@@ -65,10 +75,11 @@ jobs:
         name: caddy-${{ github.sha }}-${{ matrix.config.name }}
         path: ./release-ready/*
     
-    - name: Upload to GitHub Release for other platform
+    - name: Upload to GitHub Release
       uses: svenstaro/upload-release-action@v2
-      if: github.event_name == 'release' && matrix.config.release && matrix.config.GOOS == 'linux'
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true' && matrix.config.GOOS == 'linux'
       with:
         file: ./release-ready/caddy-${{ matrix.config.name }}.tar.gz
-        tag: ${{ github.ref }}
+        tag: ${{ github.event.inputs.release_tag }}
+        release_name: Release ${{ github.event.inputs.release_tag }}
         overwrite: true
